@@ -1,3 +1,6 @@
 .idea/**
 .vscode/**
-Lab03/cmake-build-debug/CMakeFiles/clion-log.txt
+Lab03/build/**
+avg_POSIX_uni.zip
+
+Lab03/bin/*

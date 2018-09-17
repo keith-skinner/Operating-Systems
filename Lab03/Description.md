@@ -110,12 +110,14 @@ For example, the following invocation of the monitor process:
 creates a system with one monitor with the starting temperature 200 and four nodes with starting temperatures 25, 50, 75, and 100. The identifiers of the corresponding nodes are implied to be 0, 1, 2, and 3.
 
 # Files
-Use the following program structure:
 
-message.h - for includes, declarations, and definitions;
-monitor.c - for the code of the monitor process;
-node.c - for the code of the node process.
-Message Format
+Use the following program structure:
+ - `message.h` - for includes, declarations, and definitions;
+ - `monitor.c` - for the code of the monitor process;
+ - `node.c` - for the code of the node process.
+
+## Message Format
+
 The following data structure must be used for all messages (i.e., from nodes to the monitor, and vice versa):
 
 >   ```C
