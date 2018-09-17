@@ -1,64 +1,76 @@
-#Task description
+# Task description
 
 Develop a dynamic distributed system as a network consisting of a number of nodes and a centralized monitor. The nodes should report their "temperatures" to the monitor which, after receiving all reports and calculating an integrated "modulating temperature", sends feedback to the nodes. The feedback may be an instruction to:
 
-modify the node temperature using the old temperature and the received integrated temperature included in the feedback from the monitor, or
-stop processing in case of detecting no temperature changes in any of the nodes (effectively, this feedback shuts down the whole system).
+* modify the node temperature using the old temperature and the received integrated temperature included in the feedback from the monitor, or
+* stop processing in case of detecting no temperature changes in any of the nodes (effectively, this feedback shuts down the whole system).
 The monitor process should calculate the integrated temperature following this formula:
 
+```
 new_integrated_temp
-      = (2 * previous_integrated_temp + sum_of_client_temps) / 6;
+    = (2 * previous_integrated_temp + sum_of_client_temps) / 6;
+```
+    
 That value is sent as part of the feedback to all nodes.
 
 Each of the nodes then should calculate a new temperature based on the following formula:
 
+```
 new_node_temp
-      = (previous_node_temp * 3 + 2 * new_integrated_temp) / 5;
+    = (previous_node_temp * 3 + 2 * new_integrated_temp) / 5;
+```
 Given these two formulas, a system with four nodes (like the one shown in the examples) should stabilize in reasonable time.
 
-Output
+# Output
 Each node process should print its temperature after the temperature is recalculated in response to the feedback from the monitor:
 
-NODE 2 TEMPERATURE: 78
+    NODE 2 TEMPERATURE: 78
+
 The monitor process also should print its temperature after a new integrated temperature is calculated based on the temperatures reported by the nodes:
 
-MONITOR TEMPERATURE: 45
+    MONITOR TEMPERATURE: 45
 After the monitor process determines that the system is stable (i.e., no node changed its temperature) and sends feedback to the node processes informing them about the stability, it should print:
 
-STABLE TEMPERATURE DETECTED.
-MONITOR TERMINATING...
+    STABLE TEMPERATURE DETECTED.
+    MONITOR TERMINATING...
+
 When a node process receives feedback from the monitor that the system is stable, it should print:
 
-NODE 2 TERMINATING...
+    NODE 2 TERMINATING...
+
 (assuming a node with the identifier 2) and then exit.
 
-Implementation
-You must use POSIX Message Queues in the implementation. Explore the relevant man pages starting with:
+# Implementation
 
-$ man mq_overview
-You will find a sample application of the message queues in the archive avg_POSIX_uni.zip. In the application, a server node calculates an average of temperatures reported by a number of client nodes. Download the archive, unzip it to a separate directory, explore - and then compile - the code, and experiment running the application with a variety of parameters. When you understand the sample code, especially the code that implements the communication using unidirectional message queues, move on to the implementation of the task using the following guidelines.
+You must use **POSIX Message Queues** in the implementation. Explore the relevant man pages starting with:
 
-Monitor Process
+    $ man mq_overview
+
+You will find a sample application of the message queues in the archive [avg_POSIX_uni.zip](https://cilearn.csuci.edu/courses/5613/files/580597/download?wrap=1). In the application, a server node calculates an average of temperatures reported by a number of client nodes. Download the archive, unzip it to a separate directory, explore - and then compile - the code, and experiment running the application with a variety of parameters. When you understand the sample code, especially the code that implements the communication using unidirectional message queues, move on to the implementation of the task using the following guidelines.
+
+## Monitor Process
 The dynamic system should be composed of a single central monitor process, and a number of external node processes. The whole system should be started by running the monitor process that must:
 
-remove (using mq_unlink()) any message queues that could have remained after abnormal terminations (e.g., ^C) of the past runs of the monitor, since the queues are persistent,
-create and configure (using mq_open()) an afferent (incoming) message queue for accepting reports from the node processes,
-for ecery node process, create and configure an efferent (outgoing) message queue for sending feedback to the corresponding node processes, and then
-create (using fork()) and start (using execlp()) the node processes.
+* remove (using `mq_unlink()`) any message queues that could have remained after abnormal terminations (e.g., `^C`) of the past runs of the monitor, since the queues are persistent,
+* create and configure (using `mq_open()`) an afferent (incoming) message queue for accepting reports from the node processes,
+* for every node process, create and configure an efferent (outgoing) message queue for sending feedback to the corresponding node processes, and then
+* create (using `fork()`) and start (using `execlp()`) the node processes.
+
 After creating the queues and the node processes, the monitor should enter the "regular" operation that consists of the loop in which:
 
-reports from all node processes identified by their identifier are read (using mq_receive()) from the afferent reporting message queue,
-computes the sum of the temperatures reported by the nodes processes,
-saves the reported values for further tests on stability,
-counts the number of processes that do not change their temperatures, and
-exits when none of the node processes changed temperature in the latest cycle;otherwise, itcontinues to loop.
-After the loop is exited, the monitor must send (using mq_send()) a termination request to all node processes by setting the flag stable in the sent message to true, and then, it must remove all queues used in the program (again, since they are persistent).
+* reports from all node processes identified by their identifier are read (using `mq_receive()`) from the afferent reporting message queue,
+* computes the sum of the temperatures reported by the nodes processes,
+* saves the reported values for further tests on stability,
+* counts the number of processes that do not change their temperatures, and
+* exits when none of the node processes changed temperature in the latest cycle;otherwise, itcontinues to loop.
 
-Node Process
-Each of the node processes should open (using mq_open()) the reporting message queue that the monitor process has already created, and then run a loop that should:
+After the loop is exited, the monitor must send (using `mq_send()`) a termination request to all node processes by setting the flag stable in the sent message to true, and then, it must remove all queues used in the program (again, since they are persistent).
 
-report the node's temperature (using mq_send()) to the monitor using the reporting queue,
-obtain the feedback (using mq_send() on the feedback queue),
+## Node Process
+Each of the node processes should open (using `mq_open()`) the reporting message queue that the monitor process has already created, and then run a loop that should:
+
+report the node's temperature (using `mq_send()`) to the monitor using the reporting queue,
+obtain the feedback (using `mq_send()` on the feedback queue),
 terminate if the stable flag in the received message is set to true, or
 recalculate the temperature and continue otherwise.
 Please note that in this solution all node processes report temperatures to the common reporting unidirectional message queue, and receive feedback through individual unidirectional feedback queues. The monitor can tell apart reports from different node processes by the node id included in the message.
