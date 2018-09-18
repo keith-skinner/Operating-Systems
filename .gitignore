@@ -1,6 +1,4 @@
 .idea/**
 .vscode/**
 Lab03/build/**
-avg_POSIX_uni.zip
-
-Lab03/bin/*
+Lab03/bin/**
