@@ -1,0 +1,5 @@
+#ignore everything in this directory
+**
+#EXCEPT this file.
+!.gitignore
+#now i can force this directory to show up when you clone.
