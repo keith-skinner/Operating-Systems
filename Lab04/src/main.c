@@ -32,7 +32,7 @@ void loadMatrix(int ***matrix, int m, int n)
 void allocateMatrix(int ***matrix, int m, int n)
 // allocates the memory for a matrix
 {
-    (*matrix) = calloc(m, sizeof(int *);
+    (*matrix) = calloc(m, sizeof(int *));
     for(int i=0; i<m; ++i)
         (*matrix)[i] = calloc(n, sizeof(int));
 }
@@ -59,7 +59,8 @@ void *calculate(void * data)
     struct matrixCell *cell = data;
 
     for (; (cell->k) >= 0; --(cell->k) )
-        (cell->c)[i][j] += (cell->a)[i][k] * (cell->b)[k][j];
+        (cell->c)[cell->i][cell->j] += 
+            (cell->a)[cell->i][cell->k] * (cell->b)[cell->k][cell->j];
 
     pthread_exit(0);
 }
@@ -81,10 +82,10 @@ void computeMatrix(int **a, int **b, int **c, int m, int k, int n)
 
     //join threads once finished calculating
     for (int i=0; i<m*n; ++i)
-        thread_join(threadIDs[i], NULL/*retval*/);
+        pthread_join(threadIDs[i], NULL/*retval*/);
 
     //clean up thread state
-    free(threadIds);
+    free(threadIDs);
     free(cells);
 }
 
@@ -94,7 +95,7 @@ void displayMatrix(int **matrix, int m, int n)
     for (int i=0; i<m; ++i) {
         for (int j=0; j<n-1; ++j)
             printf("%d\t", matrix[i][j]);
-        printf("%d\n", matrix[i][n-1];
+        printf("%d\n", matrix[i][n-1]);
     }
     printf("\n\n");
 }
@@ -144,7 +145,7 @@ int main(int argc, char * argv[])
             perror("Could not open file");
             exit(errno);
         }
-        scanf("%d %d %d", &m, &k, &d);
+        scanf("%d %d %d", &m, &k, &n);
         allocateAndLoadMatrices(&a, &b, &c, m, k, n);
         computeMatrix(a, b, c, m, k, n);
         displayMatrices(a, b, c, m, k, n);
