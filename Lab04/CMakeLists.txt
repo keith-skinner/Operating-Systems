@@ -15,5 +15,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
+
+find_package(Threads)
 add_executable(threads src/main.c)
+target_link_libraries(threads ${CMAKE_THREAD_LIBS_INIT}) 
 

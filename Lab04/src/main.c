@@ -20,7 +20,7 @@ void loadMatrix(int ***matrix, int m, int n)
 // inserts values into a matrix 
 {
     for (int i=0; i<m; ++i) {
-        for (int j=0; j<n; ++i) {
+        for (int j=0; j<n; ++j) {
             if (scanf("%d", &(*matrix)[i][j]) != 1) {
                 perror("Expected more input"); 
                 exit(errno);
@@ -37,27 +37,30 @@ void allocateMatrix(int ***matrix, int m, int n)
         (*matrix)[i] = calloc(n, sizeof(int));
 }
 
-void allocateAndLoadMatrices(int ***a, int ***b, int ***c, int m, int k, int n)
+void allocateAndLoadMatrices(int ***a, int ***b, int ***c, int *m, int *k, int *n)
 // allocates memory for the matrix
 // fills matrix with values from stdin
 {   
+    //get dimensions of matrix    
+    scanf("%d %d %d", m, k, n);    
     //create and load matrix a
-    allocateMatrix(a, m, k);
-    loadMatrix(a, m, k);
+    allocateMatrix(a, *m, *k);
+    loadMatrix(a, *m, *k);
 
     //create and load matrix b
-    allocateMatrix(b, k, n);
-    loadMatrix(b, k, n);
+    allocateMatrix(b, *k, *n);
+    loadMatrix(b, *k, *n);
 
-    //crate matrix c but load
-    allocateMatrix(c, m, n);
+    //crate matrix c but don't load
+    allocateMatrix(c, *m, *n);
 }
 
 void *calculate(void * data)
 //Calculates the value of one elemnt of Matrix cell->c
 {
     struct matrixCell *cell = data;
-
+    
+    //dot product formula over row i of a and column j of b
     for (; (cell->k) >= 0; --(cell->k) )
         (cell->c)[cell->i][cell->j] += 
             (cell->a)[cell->i][cell->k] * (cell->b)[cell->k][cell->j];
@@ -69,23 +72,23 @@ void computeMatrix(int **a, int **b, int **c, int m, int k, int n)
 //computes matrix c(m*n) from matricies a(m*k) and b(k*n)
 {
     //allocate resources for the objects to be used in the theads so they don't become dangling refrences
-    pthread_t *threadIDs = calloc(m*n, sizeof(pthread_t));
+    pthread_t *threads = calloc(m*n, sizeof(pthread_t));
     struct matrixCell * cells = calloc(m*n, sizeof(struct matrixCell));
     
     //create m*n threads for the calculations
     for (int i=0; i<m; ++i) {
-        for (int j=0; j<n; ++i) {
+        for (int j=0; j<n; ++j) {
             cells[m*i+j] = (struct matrixCell) { i, j, k-1, a, b, c };
-            pthread_create(&threadIDs[m*i+j], NULL /*attr*/, calculate, &cells[m*i+j]);
+            pthread_create(&threads[m*i+j], NULL /*attr*/, calculate, &cells[m*i+j]);
         }
     }
 
     //join threads once finished calculating
     for (int i=0; i<m*n; ++i)
-        pthread_join(threadIDs[i], NULL/*retval*/);
+        pthread_join(threads[i], NULL/*retval*/);
 
     //clean up thread state
-    free(threadIDs);
+    free(threads);
     free(cells);
 }
 
@@ -103,11 +106,11 @@ void displayMatrix(int **matrix, int m, int n)
 void displayMatrices(int **a, int **b, int **c, int m, int k, int n)
 //print matrices a, b, and c to stdout
 {
-    printf("MATRIX A");
+    printf("MATRIX A\n");
     displayMatrix(a, m, k);
-    printf("MATRIX B");
+    printf("MATRIX B\n");
     displayMatrix(b, k, n);
-    printf("MATRIX C");
+    printf("MATRIX C\n");
     displayMatrix(c, m, n);
 }
 
@@ -145,14 +148,12 @@ int main(int argc, char * argv[])
             perror("Could not open file");
             exit(errno);
         }
-        scanf("%d %d %d", &m, &k, &n);
-        allocateAndLoadMatrices(&a, &b, &c, m, k, n);
+        allocateAndLoadMatrices(&a, &b, &c, &m, &k, &n);
         computeMatrix(a, b, c, m, k, n);
         displayMatrices(a, b, c, m, k, n);
         deallocateMatrices(&a, &b, &c, &m, &k, &n);
     }
+
     return 0;
 }
-
-
 
