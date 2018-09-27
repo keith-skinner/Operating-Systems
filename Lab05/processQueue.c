@@ -1,70 +1,103 @@
 #include "processQueue.h"
 
-PROCESS *processTable; // an array of all processes
-int processTableSize = 0;
+//A dynamically allocating array of default size PROCESS_TABLE_CAPACITY
 
-PROCESS **readyQueue; // an array of pointers to the processes in the processTable
+PROCESS *processTable = NULL; // an array of all processes
+int processTableSize = 0;
+int processTableCapacity = 0;
+
+PROCESS **readyQueue = NULL; // an array of pointers to the processes in the processTable
 int readyQueueSize = 0;
+int readyQueueCapacity = 0;
 
 // constructor of the process table
 void createProcessTable(int capacity)
 {
-    processTable = (PROCESS *) malloc(capacity * sizeof(PROCESS));
+    // TODO - DONE - Allocate space for Process Table or Resize table
+    if (capacity > processTableCapacity) {
+        if (processTable == NULL)
+            processTable = calloc(capacity, sizeof(PROCESS));
+        else realloc(processTable, capacity);
+        processTableCapacity = capacity;
+    }
 }
 
 // constructor of the ready queue
 void createReadyQueue(int capacity)
 {
-    readyQueue = (PROCESS **) malloc(capacity * sizeof(PROCESS *));
+    // TODO - DONE - Allocate space for Ready Queue or Resize table
+    if (capacity > readyQueueCapacity) {
+        if (readyQueue == NULL)
+            readyQueue = (PROCESS **) malloc(capacity * sizeof(PROCESS *));
+        else realloc(readyQueue, capacity);
+        readyQueueCapacity = capacity;
+    }
 }
 
 // adds a process and expands the table if necessary
 void addProcessToTable(PROCESS process)
 {
-    // TODO: complete
+    // TODO - DONE - add process to table
+    if (processTableSize == processTableCapacity)
+        createProcessTable(processTableCapacity * 3 / 2);
+    memcpy(&processTable[processTableSize++], &process, sizeof(PROCESS));
 }
 
 void displayProcessTable()
 {
     printf("PROCESSES:\nName    \tEntry\tBurst\n");
 
-    // TODO: complete
-
+    // TODO - DONE - print all processes in table
+    for (int i = 0; i<processTableSize; ++i)
+        printf("%10s %5d %5d\n", 
+                processTable[i].name, 
+                processTable[i].entryTime, 
+                processTable[i].burstTime);
     printf("\n");
 }
 
 // finds the shortest job in the ready queue and returns its location in the queue
+//      returns -1 if readyQueue is empty.
 int findShortestJob()
 {
-    int shortest = -1;
+    if (readyQueueSize == 0)
+        return -1;
+    int shortest = 0;
 
-    // TODO: complete
-
+    // TODO - DONE - Find index to the shortest job in the queue
+    for (int i=1; i<readyQueueSize; ++i)
+        if (readyQueue[i]->burstTime < readyQueue[shortest]->burstTime)
+            shortest = i;
     return shortest;
 }
 
-
 // adds any processes that arrive at the current time to the readyQueue
+//      If no process at this time, return NULL
+//      Implies only one process at a time.
 PROCESS * arrivingProcess(int time)
 {
-    // TODO: complete
-
+    // TODO - DONE - return p
+    for (int i = 0; i<processTableSize; ++i)
+        if (processTable[i].entryTime == time)
+            return &processTable[i];
     return NULL;
 }
 
 // determines if any processes in the process queue have more to execute
 bool processesLeftToExecute()
 {
-    // TODO: complete
-
-    return false; //return 0 if all processes are complete
+    // TODO - DONE - Find if there's any processes left to execute
+    return readyQueueSize == 0;
 }
 
 
 // adds a pointer and expands the ready queue if necessary
 void addProcessToReadyQueue(PROCESS *pointer)
 {
-    // TODO: complete
+    // TODO - DONE - add process to Queue
+    if (readyQueueSize == readyQueueCapacity)
+        createReadyQueue(readyQueueCapacity * 3 / 2);
+    readyQueue[readyQueueSize++] = pointer;
 }
 
 // exposes a specific process in the ready queue (it stays in the queue)
@@ -77,19 +110,22 @@ PROCESS *getProcessFromReadyQueue(int index)
 PROCESS *fetchProcessFromReadyQueue(int index)
 {
     PROCESS *proc = readyQueue[index];
-
     removeProcessFromReadyQueue(index);
-
     return proc;
+
+    //return removeProcessFromReadyQueue(index);
 }
 
 // removes the process at index from the ready queue and returns a pointer to it
 PROCESS *removeProcessFromReadyQueue(int index)
 {
     PROCESS *removed = NULL;
-
-    // TODO: complete
-
+    // TODO - DONE
+    if (index < readyQueueSize) {
+        removed = readyQueue[index];
+        for (int i = index; i<readyQueueSize-1; ++i)
+            readyQueue[index] = readyQueue[index+1];
+    }
     return removed;
 }
 
@@ -102,14 +138,30 @@ int getReadyQueueSize()
 // displays the contents of the ready queue
 void displayQueue()
 {
-    // TODO: complete
+    // TODO - DONE
+    printf("QUEUE:");
+
+    //queue is empty
+    if (processesLeftToExecute()) {
+        printf(" <empty>\n");
+        return;
+    }
+
+    //queue is not empty
+    for (int i=0; i<readyQueueSize; ++i)
+        printf(" %s(%d)", readyQueue[i]->name, readyQueue[i]->burstTime);
+    printf("\n");
 }
 
 //calculates the average wait time using information in the proc_queue
 //and prints the value.
 void printAverageWaitTime()
 {
-    // TODO: complete
+    // TODO - DONE
+    float sum = 0.0;
+    for (int i=0; i<processTableSize; ++i)
+        sum += (float)processTable[i].waitTime;
+    printf("Average Wait Time: %.2f\n", sum/processTableSize);
 }
 
 // clean-up the table and the queue

@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
 #define PROCESS_TABLE_CAPACITY 64
+
 #define READY_QUEUE_CAPACITY 64
 
 typedef struct proc

@@ -27,7 +27,7 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    // skip over the enf of line marker
+    // skip over the end of line marker
     scanf("\n");
 
     printf("\nALGORITHM: %s", parameters.algorithm);
@@ -81,6 +81,7 @@ void fcfsStep(void *param)
     ALGORITHM_PARAMS *p = (ALGORITHM_PARAMS *) param;
 
     // TODO: implement
+
 }
 
 // function implementing a step of SJF
