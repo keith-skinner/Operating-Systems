@@ -125,6 +125,7 @@ PROCESS *removeProcessFromReadyQueue(int index)
         removed = readyQueue[index];
         for (int i = index; i<readyQueueSize-1; ++i)
             readyQueue[index] = readyQueue[index+1];
+        --readyQueueSize;
     }
     return removed;
 }

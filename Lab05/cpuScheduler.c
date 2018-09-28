@@ -39,7 +39,6 @@ int main()
     createReadyQueue(READY_QUEUE_CAPACITY);//create queue with size == number of processes
 
     readProcessTable(); //populate process table
-
     displayProcessTable();
 
     if ((parameters.newProcess = arrivingProcess(time)) != NULL)
@@ -75,39 +74,78 @@ void doStep(void (*func)(void *), void *param)
     func(param);
 }
 
-// function implementing a step of FCFS
+// function implementing a step of FCFS (first come first serve)
 void fcfsStep(void *param)
 {
     ALGORITHM_PARAMS *p = (ALGORITHM_PARAMS *) param;
 
-    // TODO: implement
-
+    // TODO - DONE
+    if (p->cpu == NULL || p->cpu->burstTime == 0) {
+        if (p->cpu != NULL)
+            p->cpu->offTime = p->time;
+        p->cpu = fetchProcessFromReadyQueue(0);
+        
+        if (p->cpu != NULL)
+            p->cpu->waitTime = p->time - p->cpu->offTime;
+    }
 }
 
-// function implementing a step of SJF
+// function implementing a step of SJF (shortest job first)
 void sjfStep(void *param)
 {
     ALGORITHM_PARAMS *p = (ALGORITHM_PARAMS *) param;
 
-    // TODO: implement
+    //TODO - DONE
+    if (p->cpu == NULL || p->cpu->burstTime == 0) {
+        //take cpu off cpu
+        if (p->cpu != NULL)
+            p->cpu->offTime = p->time;
+        p->cpu = fetchProcessFromReadyQueue(findShortestJob());
+        //if there were actual jobs left, set wait-time
+        if (p->cpu != NULL)
+            p->cpu->waitTime = p->time - p->cpu->offTime;
+    }
 }
 
-// function implementing a step of SRTF
+// function implementing a step of SRTF (shortest remaining time first)
 void srtfStep(void *param)
 {
     ALGORITHM_PARAMS *p = (ALGORITHM_PARAMS *) param;
-
+    
     // TODO: implement
+    PROCESS * shortest = getProcessFromReadyQueue(findShortestJob());
+    if (p->cpu == NULL || p->cpu->burstTime == 0 || shortest->burstTime < p->cpu->burstTime ) {
+        if (p->cpu != NULL) {
+            p->cpu->offTime = p->time;
+            if (p->cpu->burstTime != 0)
+                addProcessToReadyQueue(p->cpu);
+        }
+        p->cpu = shortest;
+        if (p->cpu != NULL)
+            p->cpu->waitTime = p->time - p->cpu->offTime;
+    }
+
 }
 
-// function implementing a step of RR
+// function implementing a step of RR (round robin)
 void rrStep(void *param)
 {
     ALGORITHM_PARAMS *p = (ALGORITHM_PARAMS *) param;
-
-    static int rrCounter; // counter to keep track of how many more ticks the process in cpu has left
+    static int rrCounter = 0; 
 
     // TODO: implement
+    if (p->cpu == NULL || p->cpu->burstTime == 0 || rrCounter == 0) {
+        rrCounter = p->quantum;
+        if (p->cpu != NULL) {
+            p->cpu->offTime = p->time;
+            if (p->cpu->burstTime != 0)
+                addProcessToReadyQueue(p->cpu);
+        }
+        p->cpu = fetchProcessFromReadyQueue(0);
+        if (p->cpu != NULL)
+            p->cpu->waitTime = p->time - p->cpu->offTime;
+    }
+    --rrCounter;
 }
 
 //fills the processTable with processes from input
@@ -155,9 +193,3 @@ void displayTimeTick(int time, PROCESS *cpu)
     displayQueue();
     printf("\n\n");
 }
-
-
-
-
-
-
