@@ -1,4 +1,29 @@
 #include "cpuScheduler.h"
+#include <stdio.h>
+#include <stdbool.h>
+
+//Keith features!
+#define KEITH
+//#undef KEITH
+
+//enable the ability to log
+#ifdef KEITH
+//https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
+#define LOG(format, ...) fprintf (stderr, format "\n", ##__VA_ARGS__); fflush(stderr)
+#else
+#define LOG(x)
+#endif
+
+
+//says I'm implicitly declaring function getline. 
+//  So I must not have the extension enabled.
+#ifdef KEITH
+#include "getline.h"
+#endif
+
+
+#undef KEITH
+
 
 int main()
 {
@@ -10,8 +35,7 @@ int main()
     scanf("%s", parameters.algorithm);
 
     //check which algorithm was passed, set values accordingly
-    if (strcmp(parameters.algorithm, "RR") == 0)
-    {
+    if (strcmp(parameters.algorithm, "RR") == 0) {
         scanf("%d", &parameters.quantum);
         parameters.step = &rrStep;
     }
@@ -21,8 +45,7 @@ int main()
         parameters.step = &sjfStep;
     else if (strcmp(parameters.algorithm, "SRTF") == 0)
         parameters.step = &srtfStep;
-    else
-    {
+    else {
         printf("The job type input is not a valid input!");
         exit(EXIT_FAILURE);
     }
@@ -44,25 +67,20 @@ int main()
     if ((parameters.newProcess = arrivingProcess(time)) != NULL)
         addProcessToReadyQueue(parameters.newProcess);
 
-    while (processesLeftToExecute())
+    while (processesLeftToExecute()) 
     {
-        parameters.time = time;
-
+        parameters.time = time++;
         doStep(parameters.step, &parameters);
-
         displayTimeTick(time, parameters.cpu);
 
         if (parameters.cpu != NULL)
             parameters.cpu->burstTime--;
-
-        time++;
-
+        
         if ((parameters.newProcess = arrivingProcess(time)) != NULL)
             addProcessToReadyQueue(parameters.newProcess);
     }
 
     printAverageWaitTime();
-
     cleanUp();
 
     return EXIT_SUCCESS;
@@ -72,6 +90,22 @@ int main()
 void doStep(void (*func)(void *), void *param)
 {
     func(param);
+}
+
+//get rid of done process
+void doneProcess(ALGORITHM_PARAMS * p)
+{
+	if (p->cpu && p->cpu->burstTime <= 0)
+		p->cpu = NULL;
+}
+
+void pauseProcess(ALGORITHM_PARAMS * p, bool condition)
+{
+	if (p->cpu != NULL && condition) {
+		p->cpu->offTime = p->time;
+		addProcessToReadyQueue(p->cpu);
+		p->cpu = NULL;
+	}
 }
 
 // function implementing a step of FCFS (first come first serve)
@@ -94,12 +128,15 @@ void fcfsStep(void *param)
 void sjfStep(void *param)
 {
     ALGORITHM_PARAMS *p = (ALGORITHM_PARAMS *) param;
+    if (p->cpu->burstTime == 0)
+            p->cpu = NULL;
 
     //TODO - DONE
-    if (p->cpu == NULL || p->cpu->burstTime == 0) {
+    if (p->cpu == NULL) {
         //take cpu off cpu
         if (p->cpu != NULL)
             p->cpu->offTime = p->time;
+        
         p->cpu = fetchProcessFromReadyQueue(findShortestJob());
         //if there were actual jobs left, set wait-time
         if (p->cpu != NULL)
@@ -107,24 +144,23 @@ void sjfStep(void *param)
     }
 }
 
-// function implementing a step of SRTF (shortest remaining time first)
+//TODO - DONE - function implementing a step of SRTF (shortest remaining time first)
 void srtfStep(void *param)
 {
     ALGORITHM_PARAMS *p = (ALGORITHM_PARAMS *) param;
-    
+
     // TODO: implement
-    PROCESS * shortest = getProcessFromReadyQueue(findShortestJob());
-    if (p->cpu == NULL || p->cpu->burstTime == 0 || shortest->burstTime < p->cpu->burstTime ) {
-        if (p->cpu != NULL) {
-            p->cpu->offTime = p->time;
-            if (p->cpu->burstTime != 0)
-                addProcessToReadyQueue(p->cpu);
-        }
-        p->cpu = shortest;
+	doneProcess(p);
+    int index = findShortestJob();
+    PROCESS * shortest = getProcessFromReadyQueue(index);
+	pauseProcess(p, shortest != NULL && shortest->burstTime < p->cpu->burstTime);
+
+    //put shortest burst time remaining process on cpu
+    if (p->cpu == NULL) {
+        p->cpu = removeProcessFromReadyQueue(index);
         if (p->cpu != NULL)
             p->cpu->waitTime = p->time - p->cpu->offTime;
     }
-
 }
 
 // function implementing a step of RR (round robin)

@@ -45,11 +45,10 @@ void addProcessToTable(PROCESS process)
 
 void displayProcessTable()
 {
-    printf("PROCESSES:\nName    \tEntry\tBurst\n");
-
+    printf("PROCESSES:\nName\tEntry\tBurst\n");
     // TODO - DONE - print all processes in table
     for (int i = 0; i<processTableSize; ++i)
-        printf("%10s %5d %5d\n", 
+        printf("  %s\t  %d\t  %d\n", 
                 processTable[i].name, 
                 processTable[i].entryTime, 
                 processTable[i].burstTime);
@@ -62,9 +61,10 @@ int findShortestJob()
 {
     if (readyQueueSize == 0)
         return -1;
-    int shortest = 0;
-
+    
+    
     // TODO - DONE - Find index to the shortest job in the queue
+    int shortest = 0;
     for (int i=1; i<readyQueueSize; ++i)
         if (readyQueue[i]->burstTime < readyQueue[shortest]->burstTime)
             shortest = i;
@@ -87,7 +87,12 @@ PROCESS * arrivingProcess(int time)
 bool processesLeftToExecute()
 {
     // TODO - DONE - Find if there's any processes left to execute
-    return readyQueueSize == 0;
+    int a = 0;
+    for (int i=0; i<processTableSize; ++i) {
+        if (processTable[i].burstTime > 0)
+            ++a;
+    }
+    return a != 0;
 }
 
 
@@ -103,7 +108,8 @@ void addProcessToReadyQueue(PROCESS *pointer)
 // exposes a specific process in the ready queue (it stays in the queue)
 PROCESS *getProcessFromReadyQueue(int index)
 {
-    return readyQueue[index];
+	return (0 < index && index < readyQueueSize) ?
+		readyQueue[index] : NULL;
 }
 
 // gets a specific process from the ready queue (it gets removed from the queue)
@@ -119,12 +125,13 @@ PROCESS *fetchProcessFromReadyQueue(int index)
 // removes the process at index from the ready queue and returns a pointer to it
 PROCESS *removeProcessFromReadyQueue(int index)
 {
+
     PROCESS *removed = NULL;
     // TODO - DONE
-    if (index < readyQueueSize) {
+    if (0 <= index && index < readyQueueSize) {
         removed = readyQueue[index];
         for (int i = index; i<readyQueueSize-1; ++i)
-            readyQueue[index] = readyQueue[index+1];
+            readyQueue[i] = readyQueue[i+1];
         --readyQueueSize;
     }
     return removed;
@@ -143,7 +150,7 @@ void displayQueue()
     printf("QUEUE:");
 
     //queue is empty
-    if (processesLeftToExecute()) {
+    if (!processesLeftToExecute()) {
         printf(" <empty>\n");
         return;
     }

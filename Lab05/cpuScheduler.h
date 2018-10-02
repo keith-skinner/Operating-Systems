@@ -5,7 +5,6 @@
 // OR #define _GNU_SOURCE
 
 #include <sys/types.h>
-
 #include "processQueue.h"
 
 // contains parameters for functions implementing scheduling algorithms

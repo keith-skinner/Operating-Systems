@@ -1,3 +1,8 @@
+//Keith Skinner
+//Lab 05
+//Taken from https://dev.w3.org/libwww/Library/src/vms/getline.c
+//Is an implementation of the gcc extension getline.
+
 #ifndef GETLINE_H
 #define GETLINE_H
 
@@ -8,6 +13,14 @@
 #include <errno.h>
 
 
+
+/* Read up to (and including) a newline from STREAM into *LINEPTR
+   (and null-terminate it). *LINEPTR is a pointer returned from malloc (or
+   NULL), pointing to *N characters of space.  It is realloc'd as
+   necessary.  Returns the number of characters read (not including the
+   null terminator), or -1 on error or EOF.  */
+
+int getline(char **lineptr, size_t *n, FILE *stream);
 int getline(char **lineptr, size_t *n, FILE *stream)
 {
 static char line[256];
