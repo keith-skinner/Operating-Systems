@@ -3,3 +3,6 @@
 Lab03/build/**
 Lab03/bin/**
 Lab04/build/**
+.DS_STORE
+*.swp
+
