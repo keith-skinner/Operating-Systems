@@ -1,0 +1,2 @@
+V = { Andrew, Kevin, Marleen, Sharlet, Zack, Brittany }
+E = { {Andrew, Kevin}, {Kevin, Marleen}, {Marleen, Sharlet}, {Sharlet, Zack}, {Zack, Marleen}, {Zack, Brittany} }

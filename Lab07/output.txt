@@ -1,0 +1,106 @@
+/**
+* Name: Keith Skinner
+* Lab/task: Lab 7
+* Date: 10/15/2018
+**/
+C:\Users\Keith\GitHub\Operating-Systems\Lab07\cmake-build-debug>echo begin. 
+begin.
+
+C:\Users\Keith\GitHub\Operating-Systems\Lab07\cmake-build-debug>deadlock.exe ; 0<../input/input_direct_loop.txt 
+GRAPH ADJACENCY MATRIX
+
+  0  1  0  0  0
+  0  0  1  0  0
+  0  0  0  1  0
+  0  0  0  0  1
+  0  0  0  1  0
+
+>> DEADLOCKED <<
+
+C:\Users\Keith\GitHub\Operating-Systems\Lab07\cmake-build-debug>deadlock.exe ; 0<../input/input_forest_delayed_loop.txt 
+GRAPH ADJACENCY MATRIX
+
+  0  1  0  0  0  0  0  0
+  0  0  1  0  0  0  0  0
+  0  0  0  1  1  0  0  0
+  0  0  0  0  1  0  0  0
+  0  0  0  0  0  0  0  0
+  0  0  0  0  0  0  1  0
+  0  0  0  0  0  0  0  1
+  0  0  0  0  0  1  0  0
+
+>> DEADLOCKED <<
+
+C:\Users\Keith\GitHub\Operating-Systems\Lab07\cmake-build-debug>deadlock.exe ; 0<../input/input_forest_loop.txt 
+GRAPH ADJACENCY MATRIX
+
+  0  1  0  0  0  0  0
+  0  0  1  0  0  0  0
+  0  0  0  1  0  0  0
+  0  0  0  0  1  0  0
+  0  0  1  0  0  0  0
+  0  0  0  0  0  0  1
+  0  0  0  0  0  0  0
+
+>> DEADLOCKED <<
+
+C:\Users\Keith\GitHub\Operating-Systems\Lab07\cmake-build-debug>deadlock.exe ; 0<../input/input_forest_no_loops.txt 
+GRAPH ADJACENCY MATRIX
+
+  0  1  0  0  0  0  0
+  0  0  0  0  0  0  0
+  0  0  0  1  0  0  0
+  0  0  0  0  1  1  0
+  0  0  0  0  0  0  0
+  0  0  0  0  0  0  0
+  0  0  0  0  0  0  0
+
+>> NO DEADLOCK <<
+
+C:\Users\Keith\GitHub\Operating-Systems\Lab07\cmake-build-debug>deadlock.exe ; 0<../input/input_indirect_loop.txt 
+GRAPH ADJACENCY MATRIX
+
+  0  1  0  0  0  0
+  0  0  1  0  0  0
+  0  0  0  1  0  0
+  0  0  0  0  1  0
+  0  0  1  0  0  1
+  0  0  0  0  0  0
+
+>> DEADLOCKED <<
+
+C:\Users\Keith\GitHub\Operating-Systems\Lab07\cmake-build-debug>deadlock.exe ; 0<../input/input_self_loop.txt 
+GRAPH ADJACENCY MATRIX
+
+  0  1  0  0  0
+  0  0  1  0  0
+  0  0  0  1  0
+  0  0  0  1  1
+  0  0  0  0  0
+
+>> DEADLOCKED <<
+
+C:\Users\Keith\GitHub\Operating-Systems\Lab07\cmake-build-debug>deadlock.exe ; 0<../input/input_vertex_fan.txt 
+GRAPH ADJACENCY MATRIX
+
+  0  1  1  1  1
+  0  0  0  0  0
+  0  0  0  0  0
+  0  0  0  0  0
+  0  0  0  0  0
+
+>> NO DEADLOCK <<
+
+C:\Users\Keith\GitHub\Operating-Systems\Lab07\cmake-build-debug>deadlock.exe ; 0<../input/input_vertex_on_a_stick.txt 
+GRAPH ADJACENCY MATRIX
+
+  0  0  0  0  0
+  1  0  0  0  0
+  1  0  0  0  0
+  1  0  0  0  0
+  1  0  0  0  0
+
+>> NO DEADLOCK <<
+
+C:\Users\Keith\GitHub\Operating-Systems\Lab07\cmake-build-debug>echo done. 
+done.
