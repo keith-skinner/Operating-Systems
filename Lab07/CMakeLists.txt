@@ -1,3 +1,9 @@
+#/**
+#* Name: Keith Skinner
+#* Lab/task: Lab 7
+#* Date: 10/15/2018
+#**/
+
 cmake_minimum_required(VERSION 3.8)
 
 project(deadlockGraph)
