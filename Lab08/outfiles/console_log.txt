@@ -1,0 +1,116 @@
+SIE-1119-05:Lab08 brian.skinner121$ gcc -c inverted.c -o inverted.o
+SIE-1119-05:Lab08 brian.skinner121$ gcc -c testInverted.c -o testInverted.o
+SIE-1119-05:Lab08 brian.skinner121$ ar rcs libinverted.a inverted.o
+SIE-1119-05:Lab08 brian.skinner121$ nm libinverted.a
+
+libinverted.a(inverted.o):
+00000000000003d4 S _FSIZE
+00000000000003d0 S _MSIZE
+00000000000003d8 S _NPAGES
+                 U _calloc
+00000000000001d0 T _findOldest
+0000000000000000 T _initInverted
+0000000000000140 T _lookUp
+                 U _printf
+                 U _time
+0000000000000090 T _translate
+SIE-1119-05:Lab08 brian.skinner121$ ar t libinverted.a
+__.SYMDEF SORTED
+inverted.o
+SIE-1119-05:Lab08 brian.skinner121$ gcc testInverted.o -L. -linverted -o testStaticLibInverted
+SIE-1119-05:Lab08 brian.skinner121$ ./testStaticLibInverted
+
+Paged Memory:      1048576 (1024KB)
+Frame Size:        4096
+Number Of Pages:   256
+
+First Frame:   translate(1, 10, 0)       = 0
+Second Frame:  translate(1, 20, 456)     = 4552
+Second Frame:  translate(1, 20, 466)     = 4562
+First Frame:   translate(1, 10, 2000)    = 2000
+
+First Frame is now oldest:
+First Frame:   translate(table, 7, 6, 5) = 5
+SIE-1119-05:Lab08 brian.skinner121$ gcc -v *.c
+Apple LLVM version 9.0.0 (clang-900.0.39.2)
+Target: x86_64-apple-darwin17.7.0
+Thread model: posix
+InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+Found CUDA installation: /usr/local/cuda, version unknown
+ "/Library/Developer/CommandLineTools/usr/bin/clang" -cc1 -triple x86_64-apple-macosx10.13.0 -Wdeprecated-objc-isa-usage -Werror=deprecated-objc-isa-usage -emit-obj -mrelax-all -disable-free -disable-llvm-verifier -discard-value-names -main-file-name inverted.c -mrelocation-model pic -pic-level 2 -mthread-model posix -mdisable-fp-elim -fno-strict-return -masm-verbose -munwind-tables -target-cpu penryn -target-linker-version 305 -v -dwarf-column-info -debugger-tuning=lldb -resource-dir /Library/Developer/CommandLineTools/usr/lib/clang/9.0.0 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk -I/usr/local/include -fdebug-compilation-dir /Users/brian.skinner121/Desktop/Operating-Systems/Lab08 -ferror-limit 19 -fmessage-length 131 -stack-protector 1 -fblocks -fobjc-runtime=macosx-10.13.0 -fencode-extended-block-signature -fmax-type-align=16 -fdiagnostics-show-option -fcolor-diagnostics -o /var/folders/y4/ddyp46ks73d6mk6y0cl1mms5rjnqtr/T/inverted-1c7e2a.o -x c inverted.c
+clang -cc1 version 9.0.0 (clang-900.0.39.2) default target x86_64-apple-darwin17.7.0
+ignoring nonexistent directory "/usr/local/include"
+ignoring nonexistent directory "/Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk/usr/local/include"
+ignoring nonexistent directory "/Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk/Library/Frameworks"
+#include "..." search starts here:
+#include <...> search starts here:
+ /Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include
+ /Library/Developer/CommandLineTools/usr/include
+ /Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk/usr/include
+ /Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk/System/Library/Frameworks (framework directory)
+End of search list.
+ "/Library/Developer/CommandLineTools/usr/bin/clang" -cc1 -triple x86_64-apple-macosx10.13.0 -Wdeprecated-objc-isa-usage -Werror=deprecated-objc-isa-usage -emit-obj -mrelax-all -disable-free -disable-llvm-verifier -discard-value-names -main-file-name testInverted.c -mrelocation-model pic -pic-level 2 -mthread-model posix -mdisable-fp-elim -fno-strict-return -masm-verbose -munwind-tables -target-cpu penryn -target-linker-version 305 -v -dwarf-column-info -debugger-tuning=lldb -resource-dir /Library/Developer/CommandLineTools/usr/lib/clang/9.0.0 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk -I/usr/local/include -fdebug-compilation-dir /Users/brian.skinner121/Desktop/Operating-Systems/Lab08 -ferror-limit 19 -fmessage-length 131 -stack-protector 1 -fblocks -fobjc-runtime=macosx-10.13.0 -fencode-extended-block-signature -fmax-type-align=16 -fdiagnostics-show-option -fcolor-diagnostics -o /var/folders/y4/ddyp46ks73d6mk6y0cl1mms5rjnqtr/T/testInverted-980041.o -x c testInverted.c
+clang -cc1 version 9.0.0 (clang-900.0.39.2) default target x86_64-apple-darwin17.7.0
+ignoring nonexistent directory "/usr/local/include"
+ignoring nonexistent directory "/Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk/usr/local/include"
+ignoring nonexistent directory "/Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk/Library/Frameworks"
+#include "..." search starts here:
+#include <...> search starts here:
+ /Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include
+ /Library/Developer/CommandLineTools/usr/include
+ /Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk/usr/include
+ /Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk/System/Library/Frameworks (framework directory)
+End of search list.
+ "/Library/Developer/CommandLineTools/usr/bin/ld" -demangle -lto_library /Library/Developer/CommandLineTools/usr/lib/libLTO.dylib -no_deduplicate -dynamic -arch x86_64 -macosx_version_min 10.13.0 -syslibroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk -o a.out /var/folders/y4/ddyp46ks73d6mk6y0cl1mms5rjnqtr/T/inverted-1c7e2a.o /var/folders/y4/ddyp46ks73d6mk6y0cl1mms5rjnqtr/T/testInverted-980041.o -L/usr/local/lib -lSystem /Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/lib/darwin/libclang_rt.osx.a
+SIE-1119-05:Lab08 brian.skinner121$
+SIE-1119-05:Lab08 brian.skinner121$ gcc -fPIC -shared -nostartfiles -o libinverted.so inverted.o
+SIE-1119-05:Lab08 brian.skinner121$ nm libinverted.so
+000000000000102c S _FSIZE
+0000000000001028 S _MSIZE
+0000000000001030 S _NPAGES
+                 U _calloc
+0000000000000ea0 T _findOldest
+0000000000000cd0 T _initInverted
+0000000000000e10 T _lookUp
+                 U _printf
+                 U _time
+0000000000000d60 T _translate
+                 U dyld_stub_binder
+SIE-1119-05:Lab08 brian.skinner121$ gcc -rdynamic -o testDynamicLibInverted testInverted.o -L. -linverted -ldl
+SIE-1119-05:Lab08 brian.skinner121$ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
+SIE-1119-05:Lab08 brian.skinner121$ export LD_LIBRARY_PATH
+SIE-1119-05:Lab08 brian.skinner121$ ./test
+testDynamicLibInverted  testInverted.c          testStaticLibInverted
+SIE-1119-05:Lab08 brian.skinner121$ ./test
+testDynamicLibInverted  testInverted.c          testStaticLibInverted
+SIE-1119-05:Lab08 brian.skinner121$ ./testDynamicLibInverted
+
+Paged Memory:      1048576 (1024KB)
+Frame Size:        4096
+Number Of Pages:   256
+
+First Frame:   translate(1, 10, 0)       = 0
+Second Frame:  translate(1, 20, 456)     = 4552
+Second Frame:  translate(1, 20, 466)     = 4562
+First Frame:   translate(1, 10, 2000)    = 2000
+
+First Frame is now oldest:
+First Frame:   translate(table, 7, 6, 5) = 5
+SIE-1119-05:Lab08 brian.skinner121$ gcc -rdynamic -o testDynamicImplicitLibInverted test
+testDynamicLibInverted  testInverted.c          testInverted.o          testStaticLibInverted
+SIE-1119-05:Lab08 brian.skinner121$ gcc -rdynamic -o testDynamicImplicitLibInverted test
+testDynamicLibInverted  testInverted.c          testInverted.o          testStaticLibInverted
+SIE-1119-05:Lab08 brian.skinner121$ gcc -rdynamic -o testDynamicImplicitLibInverted testInverted.o -L. -linverted
+SIE-1119-05:Lab08 brian.skinner121$ ./testDynamicImplicitLibInverted
+
+Paged Memory:      1048576 (1024KB)
+Frame Size:        4096
+Number Of Pages:   256
+
+First Frame:   translate(1, 10, 0)       = 0
+Second Frame:  translate(1, 20, 456)     = 4552
+Second Frame:  translate(1, 20, 466)     = 4562
+First Frame:   translate(1, 10, 2000)    = 2000
+
+First Frame is now oldest:
+First Frame:   translate(table, 7, 6, 5) = 5

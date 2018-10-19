@@ -1,0 +1,47 @@
+echo BEGIN.
+
+# Turn the used files into object files
+gcc -c ../inverted.c -o inverted.o
+gcc -c ../testInverted.c -o testInverted.o
+
+# Create NoLibrary application without library
+gcc inverted.o testInverted.o -o NoLibrary
+./NoLibrary
+
+# Create a static library (.a)
+ar rcs libinverted.a inverted.o
+
+# Display the exported functions
+nm libinverted.a
+
+# Display which object files are included
+ar t libinverted.a
+
+# Create StaticLibary application using static library
+gcc testInverted.o -L. -linverted -o StaticLibary
+./StaticLibrary
+
+# Compile a.out application with verbose output
+gcc -v *.c
+./a.out
+
+# Create a dynamic library (.so)
+gcc -fPIC -shared -nostartfiles -o libinverted.so inverted.o
+
+# Display the exported functions
+nm libinverted.so
+
+# Create DynamicLibrary application with dynamic library linking
+gcc -rdynamic -o DynamicLibrary testInverted.o -L. -linverted -ldl
+
+# To be able to link a dynamic library the .so file needs to be
+#   part of the LD_LIBRARY_PATH environment variable
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
+export LD_LIBRARY_PATH
+./DynamicLibrary
+
+# Create DynamicLibraryImplicit application with dynamic library
+#   but with implicit linking
+gcc -rdynamic -o DynamicLibraryImplicit testInverted.o -L. -linverted
+
+echo END.
