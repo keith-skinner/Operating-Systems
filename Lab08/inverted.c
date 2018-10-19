@@ -19,6 +19,11 @@ void initInverted(PROC **table, int memSize, int frameSize)
     FSIZE = frameSize;
     NPAGES = MSIZE/FSIZE;
     *table = calloc((size_t)NPAGES, sizeof(PROC));
+    printf( "Paged Memory:      %d (%dKB)\n"
+            "Frame Size:        %d\n"
+            "Number Of Pages:   %d\n"
+            "\n",
+            MSIZE, MSIZE/1024, FSIZE, NPAGES);
     //for (size_t i=0; i<NPAGES; ++i) { /*random setup here? or no?*/ }
 }
 
@@ -65,7 +70,7 @@ long findOldest(PROC *table)
     // TODO: implement
     long oldest = 0;
     for (long i = 1; i < NPAGES; ++i)
-        if (table[i].timeStamp. < table[oldest].timeStamp)
+        if (table[i].timeStamp < table[oldest].timeStamp)
             oldest = i;
     return oldest;
 }
