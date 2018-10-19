@@ -7,8 +7,9 @@ PROC *table;
 
 int main(int argc, char **argv)
 {
-   initInverted(&table, MEM_SIZE, PAGE_SIZE);
-   printf("translate(1, 10, 0) = %ld\n", translate(table, 1, 10, 0));
-   printf("translate(1, 20, 456) = %ld\n", translate(table, 1, 20, 456));
-   return 0;
+    initInverted(&table, MEM_SIZE, PAGE_SIZE);
+    printf("translate(1, 10, 0) = %ld\n", translate(table, 1, 10, 0));
+
+    printf("translate(1, 20, 456) = %ld\n", translate(table, 1, 20, 456));
+    return 0;
 }

@@ -1,15 +1,27 @@
+#include <stdbool.h>
 #include "inverted.h"
 
 long lookUp(PROC *, int, int);
 long findOldest(PROC *table);
 
+//Did I have to add these?
+int MSIZE = 0;
+int FSIZE = 0;
+int NPAGES = 0;
+
 /*
  * initializes the table for the given sizes of the memory and frame
  */
-void initInverted(PROC **table, int msize, int fsize)
+void initInverted(PROC **table, int memSize, int frameSize)
 {
     // TODO: implement
+    MSIZE = memSize;
+    FSIZE = frameSize;
+    NPAGES = MSIZE/FSIZE;
+    *table = calloc((size_t)NPAGES, sizeof(PROC));
+    //for (size_t i=0; i<NPAGES; ++i) { /*random setup here? or no?*/ }
 }
+
 
 /*
  * translate a logical address <pid, page, offset> into a physical address
@@ -19,30 +31,41 @@ void initInverted(PROC **table, int msize, int fsize)
 long translate(PROC *table, int pid, int page, int offset)
 {
     // TODO: implement
-
-    return 0;
+    long index = lookUp(table, pid, page);
+    if (index == -1) {
+        //page fault.
+        index = findOldest(table);
+        table[index].pid = pid;
+        table[index].base = page;
+    }
+    table[index].timeStamp = time(NULL);
+    return index * FSIZE + offset;
 }
+
+
 
 /*
  * find the entry in the table for a specific pid and page
  */
 long lookUp(PROC *table, int pid, int page)
 {
-    int i;
-
     // TODO: implement
-
-    return i;
+    for (int i = 0; i < NPAGES; ++i)
+        if (table[i].pid == pid && table[i].base == page)
+            return i;
+    return -1;
 }
+
 
 /*
  * find the oldest entry in the table
  */
 long findOldest(PROC *table)
 {
-    long min;
-
     // TODO: implement
-
-    return min;
+    long oldest = 0;
+    for (long i = 1; i < NPAGES; ++i)
+        if (table[i].timeStamp. < table[oldest].timeStamp)
+            oldest = i;
+    return oldest;
 }
