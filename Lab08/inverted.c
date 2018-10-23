@@ -1,3 +1,9 @@
+/**
+* Name: Keith Skinner
+* Lab/task: Lab 8
+* Date: 10/18/2018
+**/
+
 #include <stdbool.h>
 #include "outfiles/inverted.h"
 
