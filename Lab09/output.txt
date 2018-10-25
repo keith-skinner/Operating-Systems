@@ -1,0 +1,24 @@
+SIE-1119-04:cmake-build-debug brian.skinner121$ ./replace ../input.txt > ../output.txt
+
+*7  
+*0  7  
+*1  0  7  
+*2  1  0  
+>0  2  1  
+*3  0  2  
+>0  3  2  
+*4  0  3  
+*2  4  0  
+*3  2  4  
+*0  3  2  
+>3  0  2  
+>2  3  0  
+*1  2  3  
+>2  1  3  
+*0  2  1  
+>1  0  2  
+*7  1  0  
+>0  7  1  
+>1  0  7  
+
+Number of faults: 12
