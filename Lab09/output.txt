@@ -1,3 +1,9 @@
+/**
+* Name: Keith Skinner
+* Lab/task: Lab 9
+* Date: 10//29/2018
+**/
+
 SIE-1119-04:cmake-build-debug brian.skinner121$ ./replace ../input.txt > ../output.txt
 
 *7  
